@@ -1,81 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pardhu's Real-time XSS Lab 🕵️‍♂️</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; background: #eef2f3; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
-        button { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        .comment { background: #f9f9f9; border-left: 5px solid #28a745; padding: 10px; margin-top: 10px; border-radius: 3px; word-wrap: break-word; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Pardhu's Live News Portal 📰</h2>
-        <div id="inputSection">
-            <h4>Leave a Comment:</h4>
-            <textarea id="commentText" rows="3" placeholder="Enter your comment..."></textarea><br>
-            <button onclick="sendData()">Post Comment</button>
-        </div>
-        <hr>
-        <h4>Global Comments:</h4>
-        <div id="commentsArea">Loading comments...</div>
-    </div>
-<script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec";
-
-// POST
-function sendData() {
-    const msg = document.getElementById('commentText').value.trim();
-
-    if (!msg) {
-        alert("Enter comment");
-        return;
+  <title>Public Comment Lab 🧪</title>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 600px;
+      margin: auto;
+      background: #f4f4f4;
+      padding: 20px;
     }
 
-    fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify({ comment: msg }),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    .then(res => res.json())
-    .then(res => {
-        console.log(res);
-        document.getElementById('commentText').value = "";
-        loadComments();
-    })
-    .catch(err => console.error("POST Error:", err));
+    h2 {
+      text-align: center;
+    }
+
+    input, textarea {
+      width: 100%;
+      margin: 5px 0;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px;
+      width: 100%;
+      background: black;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .comment {
+      background: white;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>🧪 Public Comment Lab</h2>
+
+<input id="name" placeholder="Your name" />
+<textarea id="comment" placeholder="Write comment..."></textarea>
+<button onclick="postComment()">Post</button>
+
+<div id="comments"></div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec";
+
+async function loadComments() {
+  const res = await fetch(API);
+  const data = await res.json();
+
+  const container = document.getElementById("comments");
+  container.innerHTML = "";
+
+  data.reverse().forEach(c => {
+    container.innerHTML += `
+      <div class="comment">
+        <b>${c.name}</b><br/>
+        ${c.comment}<br/>
+        <small>${new Date(c.time).toLocaleString()}</small>
+      </div>
+    `;
+  });
 }
 
+async function postComment() {
+  const name = document.getElementById("name").value;
+  const comment = document.getElementById("comment").value;
 
-// GET
-function loadComments() {
-    fetch(scriptURL)
-    .then(res => res.json())
-    .then(response => {
-        let area = document.getElementById('commentsArea');
-        area.innerHTML = "";
+  if (!comment) {
+    alert("Enter comment!");
+    return;
+  }
 
-        let comments = response.data;
+  await fetch(API, {
+    method: "POST",
+    body: JSON.stringify({ name, comment })
+  });
 
-        comments.forEach(item => {
-            let div = document.createElement('div');
-            div.className = "comment";
-            div.textContent = item.comment;
-            area.appendChild(div);
-        });
-    })
-    .catch(err => console.error("GET Error:", err));
+  document.getElementById("comment").value = "";
+  loadComments();
 }
 
-
-// Auto refresh
-setInterval(loadComments, 5000);
-window.onload = loadComments;
+loadComments();
 </script>
-    
+
 </body>
 </html>
