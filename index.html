@@ -22,8 +22,7 @@
         <h4>Global Comments:</h4>
         <div id="commentsArea">Loading comments...</div>
     </div>
-
-    <script>
+<script>
 const scriptURL = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec";
 
 // POST
@@ -60,34 +59,23 @@ function loadComments() {
         let area = document.getElementById('commentsArea');
         area.innerHTML = "";
 
-        let comments = response.data; // ✅ FIX HERE
+        let comments = response.data;
 
         comments.forEach(item => {
             let div = document.createElement('div');
             div.className = "comment";
-
-            // ✅ SAFE (NO XSS)
             div.textContent = item.comment;
-
             area.appendChild(div);
         });
     })
     .catch(err => console.error("GET Error:", err));
 }
 
-        fetch(scriptURL, {
-  method: "POST",
-  body: JSON.stringify({ comment: msg }),
-  headers: {
-    "Content-Type": "application/json"
-  },
-  mode: "cors" // ✅ add this
-})
-
 
 // Auto refresh
 setInterval(loadComments, 5000);
 window.onload = loadComments;
 </script>
+    
 </body>
 </html>
