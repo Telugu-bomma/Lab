@@ -28,8 +28,12 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJ
 
 // POST
 function sendData() {
-    let msg = document.getElementById('commentText').value;
-    if (!msg.trim()) return;
+    const msg = document.getElementById('commentText').value.trim();
+
+    if (!msg) {
+        alert("Enter comment");
+        return;
+    }
 
     fetch(scriptURL, {
         method: "POST",
@@ -39,7 +43,8 @@ function sendData() {
         }
     })
     .then(res => res.json())
-    .then(() => {
+    .then(res => {
+        console.log(res);
         document.getElementById('commentText').value = "";
         loadComments();
     })
