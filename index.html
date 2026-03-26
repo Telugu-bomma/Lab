@@ -70,6 +70,15 @@ function loadComments() {
     .catch(err => console.error("GET Error:", err));
 }
 
+        fetch(scriptURL, {
+  method: "POST",
+  body: JSON.stringify({ comment: msg }),
+  headers: {
+    "Content-Type": "application/json"
+  },
+  mode: "cors" // ✅ add this
+})
+
 
 // Auto refresh
 setInterval(loadComments, 5000);
