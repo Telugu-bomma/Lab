@@ -39,7 +39,7 @@
   </style>
 </head>
 
-<body>
+    <body>
 
 <h2>🧪 Public Comment Lab</h2>
 
@@ -48,6 +48,16 @@
 <button onclick="postComment()">Post</button>
 
 <div id="comments"></div>
+
+<hr>
+<h3>🛡️ Admin Login (SQLi Lab)</h3>
+
+<input type="text" id="user" placeholder="Username"><br><br>
+<input type="password" id="pass" placeholder="Password"><br><br>
+
+<button onclick="login()">Login</button>
+
+<p id="loginResult"></p>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec";
@@ -67,6 +77,17 @@ async function loadComments() {
         <small>${new Date(c.time).toLocaleString()}</small>
       </div>
     `;
+  });
+}
+
+function login() {
+  let u = document.getElementById('user').value;
+  let p = document.getElementById('pass').value;
+
+  fetch(API + '?action=login&user=' + encodeURIComponent(u) + '&pass=' + encodeURIComponent(p))
+  .then(res => res.text())
+  .then(data => {
+      document.getElementById('loginResult').innerText = data;
   });
 }
 
