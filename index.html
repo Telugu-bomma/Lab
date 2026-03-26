@@ -1,54 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pardhu's Stored XSS Lab 🕵️‍♂️</title>
+    <title>Pardhu's Real-time XSS Lab 🕵️‍♂️</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .comment-box { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        #commentDisplay { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px; }
-        .user-comment { background: #e2e2e2; padding: 10px; margin-bottom: 5px; border-radius: 5px; }
+        body { font-family: sans-serif; padding: 20px; background: #eef2f3; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        button { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .comment { background: #f9f9f9; border-left: 5px solid #28a745; padding: 10px; margin-top: 10px; border-radius: 3px; }
     </style>
 </head>
 <body>
-    <h2>Pardhu News Portal 📰</h2>
-    <div class="comment-box">
-        <h4>Leave a Comment:</h4>
-        <textarea id="commentInput" rows="3" style="width:100%" placeholder="Write your comment..."></textarea><br><br>
-        <button onclick="postComment()">Post Comment</button>
-    </div>
-
-    <div id="commentDisplay">
-        <h4>Recent Comments:</h4>
+    <div class="container">
+        <h2>Pardhu's Live News Portal 📰</h2>
+        <p>Logged in as: <b id="currentUser">Guest</b></p>
+        
+        <div id="inputSection">
+            <h4>Leave a Comment:</h4>
+            <textarea id="commentText" rows="3" placeholder="Enter your comment..."></textarea><br>
+            <button onclick="sendData()">Post Comment</button>
         </div>
 
+        <hr>
+        <h4>Global Comments:</h4>
+        <div id="commentsArea">Loading comments...</div>
+    </div>
+
     <script>
-        // పేజీ లోడ్ అవ్వగానే పాత కామెంట్లు చూపిస్తుంది
-        window.onload = function() {
-            displayComments();
-        };
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec';
 
-        function postComment() {
-            let comment = document.getElementById('commentInput').value;
-            let comments = JSON.parse(localStorage.getItem('saved_comments') || "[]");
-            comments.push(comment);
-            localStorage.setItem('saved_comments', JSON.stringify(comments));
-            document.getElementById('commentInput').value = "";
-            displayComments();
-        }
-
-        function displayComments() {
-            let comments = JSON.parse(localStorage.getItem('saved_comments') || "[]");
-            let displayArea = document.getElementById('commentDisplay');
-            displayArea.innerHTML = "<h4>Recent Comments:</h4>"; // క్లీన్ చేసి మళ్ళీ చూపిస్తుంది
-            
-            comments.forEach(c => {
-                let div = document.createElement('div');
-                div.className = "user-comment";
-                // హ్యాకింగ్ కి కారణం ఇక్కడ 'innerHTML' వాడటమే!
-                div.innerHTML = c; 
-                displayArea.appendChild(div);
+        // 1. కామెంట్ పంపడం (Don's action)
+        function sendData() {
+            let msg = document.getElementById('commentText').value;
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ "comment": msg })
+            }).then(() => {
+                document.getElementById('commentText').value = "";
+                setTimeout(loadComments, 2000); // 2 సెకన్ల తర్వాత రిఫ్రెష్
             });
         }
+
+        // 2. షీట్ నుండి కామెంట్లు తీసుకురావడం (Ram's view)
+        function loadComments() {
+            fetch(scriptURL)
+            .then(response => response.json())
+            .then(data => {
+                let area = document.getElementById('commentsArea');
+                area.innerHTML = "";
+                data.forEach(item => {
+                    let div = document.createElement('div');
+                    div.className = "comment";
+                    // విల్లాన్ ఇక్కడ ఉంది: innerHTML వాడటం వల్ల XSS జరుగుతుంది
+                    div.innerHTML = item.comment; 
+                    area.appendChild(div);
+                });
+            });
+        }
+
+        // ప్రతి 5 సెకన్లకు ఆటోమేటిక్‌గా కొత్త కామెంట్లు చెక్ చేస్తుంది
+        setInterval(loadComments, 5000);
+        window.onload = loadComments;
     </script>
 </body>
 </html>
