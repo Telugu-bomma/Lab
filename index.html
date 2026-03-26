@@ -7,20 +7,17 @@
         .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
         button { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        .comment { background: #f9f9f9; border-left: 5px solid #28a745; padding: 10px; margin-top: 10px; border-radius: 3px; }
+        .comment { background: #f9f9f9; border-left: 5px solid #28a745; padding: 10px; margin-top: 10px; border-radius: 3px; word-wrap: break-word; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Pardhu's Live News Portal 📰</h2>
-        <p>Logged in as: <b id="currentUser">Guest</b></p>
-        
         <div id="inputSection">
             <h4>Leave a Comment:</h4>
             <textarea id="commentText" rows="3" placeholder="Enter your comment..."></textarea><br>
             <button onclick="sendData()">Post Comment</button>
         </div>
-
         <hr>
         <h4>Global Comments:</h4>
         <div id="commentsArea">Loading comments...</div>
@@ -29,38 +26,44 @@
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec';
 
-        // 1. కామెంట్ పంపడం (Don's action)
+        // 1. డేటా పంపడం (Don's Action)
         function sendData() {
             let msg = document.getElementById('commentText').value;
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ "comment": msg })
-            }).then(() => {
-                document.getElementById('commentText').value = "";
-                setTimeout(loadComments, 2000); // 2 సెకన్ల తర్వాత రిఫ్రెష్
-            });
+            if(!msg) return;
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", scriptURL, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    document.getElementById('commentText').value = "";
+                    loadComments();
+                }
+            };
+            xhr.send(JSON.stringify({ "comment": msg }));
         }
 
-        // 2. షీట్ నుండి కామెంట్లు తీసుకురావడం (Ram's view)
+        // 2. డేటా తీసుకురావడం (Ram's View)
         function loadComments() {
-            fetch(scriptURL)
-            .then(response => response.json())
-            .then(data => {
-                let area = document.getElementById('commentsArea');
-                area.innerHTML = "";
-                data.forEach(item => {
-                    let div = document.createElement('div');
-                    div.className = "comment";
-                    // విల్లాన్ ఇక్కడ ఉంది: innerHTML వాడటం వల్ల XSS జరుగుతుంది
-                    div.innerHTML = item.comment; 
-                    area.appendChild(div);
-                });
-            });
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", scriptURL, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    let data = JSON.parse(xhr.responseText);
+                    let area = document.getElementById('commentsArea');
+                    area.innerHTML = "";
+                    data.forEach(item => {
+                        let div = document.createElement('div');
+                        div.className = "comment";
+                        // XSS Vulnerability: innerHTML
+                        div.innerHTML = item.comment; 
+                        area.appendChild(div);
+                    });
+                }
+            };
+            xhr.send();
         }
 
-        // ప్రతి 5 సెకన్లకు ఆటోమేటిక్‌గా కొత్త కామెంట్లు చెక్ చేస్తుంది
+        // ప్రతి 5 సెకన్లకు చెక్ చేస్తుంది
         setInterval(loadComments, 5000);
         window.onload = loadComments;
     </script>
