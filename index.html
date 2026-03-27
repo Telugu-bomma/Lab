@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Public Comment Lab 🧪</title>
+  <title>🧪 Public Comment Lab</title>
   <style>
     body {
       font-family: Arial;
@@ -11,9 +11,7 @@
       padding: 20px;
     }
 
-    h2 {
-      text-align: center;
-    }
+    h2 { text-align: center; }
 
     input, textarea {
       width: 100%;
@@ -27,7 +25,6 @@
       background: black;
       color: white;
       border: none;
-      cursor: pointer;
     }
 
     .comment {
@@ -39,9 +36,9 @@
   </style>
 </head>
 
-    <body>
+<body>
 
-<h2>🧪 Public Comment Lab</h2>
+<h2>🧪 Public Comment Lab (XSS)</h2>
 
 <input id="name" placeholder="Your name" />
 <textarea id="comment" placeholder="Write comment..."></textarea>
@@ -50,62 +47,52 @@
 <div id="comments"></div>
 
 <hr>
-<h3>🛡️ Admin Login (SQLi Lab)</h3>
 
-<input type="text" id="user" placeholder="Username"><br><br>
-<input type="password" id="pass" placeholder="Password"><br><br>
-
-<button onclick="login()">Login</button>
-
-<p id="loginResult"></p>
-
-<script>
-const API = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec";
-
-async function loadComments() {
-  const res = await fetch(API);
-  const data = await res.json();
-
-  const container = document.getElementById("comments");
-  container.innerHTML = "";
-
-  data.reverse().forEach(c => {
-    container.innerHTML += `
-      <div class="comment">
-        <b>${c.name}</b><br/>
-        ${c.comment}<br/>
-        <small>${new Date(c.time).toLocaleString()}</small>
-      </div>
-    `;
-  });
-}
-
-function login() {
-  let u = document.getElementById('user').value;
-  let p = document.getElementById('pass').value;
-
-  fetch(API + '?action=login&user=' + encodeURIComponent(u) + '&pass=' + encodeURIComponent(p))
-  .then(res => res.text())
-  .then(data => {
-      document.getElementById('loginResult').innerText = data;
-  });
-}
-
- <hr>
 <h3>🏦 My Bank (CSRF Lab)</h3>
 <p>Welcome Ram! Your Balance: ₹50,000</p>
 
 <form action="https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec" method="POST">
   <input type="hidden" name="action" value="transfer">
-  
+
   Transfer to:
   <input type="text" name="to" value="friend123"><br><br>
-  
+
   Amount:
   <input type="number" name="amount" value="100"><br><br>
-  
+
   <button type="submit">Send Money</button>
-</form> 
+</form>
+
+<hr>
+
+<a href="login.html">🛡️ Go to SQLi Login Lab →</a>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec";
+
+async function loadComments() {
+  try {
+    const res = await fetch(API);
+    const data = await res.json();
+
+    const container = document.getElementById("comments");
+    container.innerHTML = "";
+
+    data.reverse().forEach(c => {
+      container.innerHTML += `
+        <div class="comment">
+          <b>${c.name}</b><br/>
+          ${c.comment}<br/>
+          <small>${new Date(c.time).toLocaleString()}</small>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    alert("API error ⚠️");
+    console.error(err);
+  }
+}
 
 async function postComment() {
   const name = document.getElementById("name").value;
