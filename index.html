@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>🧪 Public Comment Lab</title>
+  <title>🧪 XSS Comment Lab</title>
   <style>
     body {
       font-family: Arial;
@@ -10,15 +10,12 @@
       background: #f4f4f4;
       padding: 20px;
     }
-
     h2 { text-align: center; }
-
     input, textarea {
       width: 100%;
       margin: 5px 0;
       padding: 10px;
     }
-
     button {
       padding: 10px;
       width: 100%;
@@ -26,7 +23,6 @@
       color: white;
       border: none;
     }
-
     .comment {
       background: white;
       padding: 10px;
@@ -48,24 +44,8 @@
 
 <hr>
 
-<h3>🏦 My Bank (CSRF Lab)</h3>
-<p>Welcome Ram! Your Balance: ₹50,000</p>
-
-<form action="https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec" method="POST">
-  <input type="hidden" name="action" value="transfer">
-
-  Transfer to:
-  <input type="text" name="to" value="friend123"><br><br>
-
-  Amount:
-  <input type="number" name="amount" value="100"><br><br>
-
-  <button type="submit">Send Money</button>
-</form>
-
-<hr>
-
-<a href="login.html">🛡️ Go to SQLi Login Lab →</a>
+<a href="bank.html">🏦 Go to Bank (CSRF Lab) →</a><br><br>
+<a href="login.html">🛡️ Go to SQLi Lab →</a>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec";
