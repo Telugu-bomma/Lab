@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🏦 Bank CSRF Lab</title>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 500px;
+      margin: auto;
+      margin-top: 50px;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      background: black;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>🏦 Pardhu Bank (CSRF Lab)</h2>
+
+<p>Welcome Ram! Balance: ₹50,000</p>
+
+<form action="https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec" method="POST">
+  <input type="hidden" name="action" value="transfer">
+
+  Transfer to:
+  <input type="text" name="to" value="friend123">
+
+  Amount:
+  <input type="number" name="amount" value="100">
+
+  <button type="submit">Send Money</button>
+</form>
+
+<br>
+<a href="index.html">⬅️ Back to Comments</a>
+
+</body>
+</html>
