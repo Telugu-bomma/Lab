@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🛡️ SQLi Login Lab</title>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 400px;
+      margin: auto;
+      margin-top: 100px;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px;
+      width: 100%;
+      background: black;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>🛡️ Admin Login (SQLi Lab)</h2>
+
+<input type="text" id="user" placeholder="Username">
+<input type="password" id="pass" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<p id="result"></p>
+
+<br>
+<a href="index.html">⬅️ Back to Home</a>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec";
+
+function login() {
+  let u = document.getElementById("user").value;
+  let p = document.getElementById("pass").value;
+
+  fetch(API + "?action=login&user=" + encodeURIComponent(u) + "&pass=" + encodeURIComponent(p))
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("result").innerText = data;
+    })
+    .catch(err => {
+      document.getElementById("result").innerText = "Error ⚠️";
+      console.error(err);
+    });
+}
+</script>
+
+</body>
+</html>
