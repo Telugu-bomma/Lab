@@ -91,6 +91,22 @@ function login() {
   });
 }
 
+ <hr>
+<h3>🏦 My Bank (CSRF Lab)</h3>
+<p>Welcome Ram! Your Balance: ₹50,000</p>
+
+<form action="https://script.google.com/macros/s/AKfycbxcvckFP_bLiYNsDaK3EJAZbJYWdW-ePZU0-X6Rx9n1mHtHLd5DZeKOAO6cZpQ5zvI2Eg/exec" method="POST">
+  <input type="hidden" name="action" value="transfer">
+  
+  Transfer to:
+  <input type="text" name="to" value="friend123"><br><br>
+  
+  Amount:
+  <input type="number" name="amount" value="100"><br><br>
+  
+  <button type="submit">Send Money</button>
+</form> 
+
 async function postComment() {
   const name = document.getElementById("name").value;
   const comment = document.getElementById("comment").value;
